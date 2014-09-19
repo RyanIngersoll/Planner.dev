@@ -1,0 +1,80 @@
+<!-- This is the button the user will click to remove an item -->
+<!-- The value of $key should be the index from the array -->
+<button class="remove-button" data-item-id="<?= $key; ?>">Remove</button>
+ 
+<!-- This is a hidden form where we will feed the data for our request -->
+<!-- Our JavaScript will pull out the item-id, put it into the hidden field, and then submit this form -->
+<form action="todo_list.php" method="post" id="remove-form">
+    <input type="hidden" name="remove_item" id="remove-item">
+</form>
+ 
+<script>
+    // Get all the remove buttons
+    var removeButtons = document.getElementsByClassName("remove-button");
+    
+    // Loop over all the buttons
+    for (var i=0; i < removeButtons.length; i++) {
+        // Attach a click event listener to each button
+        removeButtons[i].addEventListener("click", function() {
+            // Get the ID of the item we clicked remove for
+            var itemId = this.attributes['data-item-id'].value;
+ 
+            // Put that ID into our hidden form field
+            document.getElementById("remove-item").value = itemId;
+            
+            // Submit the form
+            document.getElementById("remove-form").submit();
+        });
+    }
+</script>
+ 
+<?php
+    // This is the part you'll have to figure out for yourself...
+    // You should already have 95% of the PHP code done, it will mostly
+    // be a matter of swappy out the $_GET variable for $_POST
+?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<?php ?>
+
+		<? ?>
+
+		<?php echo 'test'; ?>
+		<?= 'test'; ?>
+
+		<?php
+			foreach($key as $value) {
+				echo 'hmtl inside of here';
+			}
+		?>
+
+		<? foreach($key as $value): ?>
+			<li>this is list item | <button id="removeItem" data-id="$key">remove item</button></li>
+		<? endforeach; ?>
+
+		<?php
+
+			if(true) {
+				// do this code
+			}
+		?>
+
+		<? if(true): ?>
+		html code
+		<? endif; ?>
+

@@ -1,0 +1,171 @@
+<?php
+class adManager {
+    load ad
+    save ad
+    add ad
+    remove ad
+    update ad
+}
+class ad {
+	everything else
+
+}
+
+bootstrap everything
+
+files
+	ads.php ****
+	require_once(ad.class.php);
+	require_once(adManger.class.php);
+
+	$adManager = new AdManager();
+	$ads = $adManger->loadAds();
+
+		include('header.php');
+			?php include('header.php') 
+			$ads = [];
+			$ad1 = new Ad['','','','','',]
+			$ad2 = new Ad['', '', '', '', ];
+			$ad3 = new Ad['', '', '', '', ];
+
+			$ads[] = $ad1;
+			$ads[] = $ad2;
+			$ads[] = $ad3;
+
+			
+
+
+			for each($ads as $index => $ad){
+				<tr>
+					<td>a href ad-veiw.php ? $_GET request title;
+					<td>echo $ad->contactname;
+					<td> echo $ad->createdAt;
+
+			}
+		<div> class container
+			<h1 ad title
+			<p filler</p
+			<h2 contact info
+			div jumbotron
+			div table
+				ad title
+				post date and time
+				author 
+				link to add page href
+				use ternary ? to see what page your on $_SELF
+
+		<?php include('footer');
+
+	navbar.php---changes here change everything
+		bootstrap navbar
+
+	header.php
+		include('navbar.php');
+
+	footer.php
+		bootstrap footer;
+
+	adManager.php;
+		class AdManager{
+			public $dataFile = "";
+
+			function __contstruct($dataFile = "ads.csv"){
+					$this->dataFile = $dataFile;
+
+			}
+
+			function loadads -- read CSV file function
+			function saveads -- write to file function
+			function addAd
+
+		}
+
+	ad-view.php
+		require_once('ad.class.php');
+
+		$ad1 = new Ad("a, b, c, d, e, f");// calls construct function from the ad.class.php file
+		$ad1 = new Ad("a, b, c, d, e, f");
+		$ad1 = new Ad("a, b, c, d, e, f");
+		$ad1 = new Ad("a, b, c, d, e, f");
+		$ad1 = new Ad("a, b, c, d, e, f");
+
+		include ('header.php');
+			div <p ad content
+
+			$adId = $_GET('id');
+			$ad = $ads
+
+	ad.class.php
+		class ad{
+			public $title = '';
+			public $body = '';
+			public $createdAt = '';
+			public $contactName = '';
+			public $contactemail = '';
+
+			public function toArray(){
+
+			}
+
+			function __construct($title, $body, $contactName, $contactEmail, $createdAt){
+				$this->title = $title;
+				$this->body = $body;
+				$this->contactName = $contactName;
+				$this->contactEmail = $contactEmail;
+				$this->createdAt = $createdAT;
+			}
+			$ad = new Ad("its a new car");
+
+	ad-create.php
+		<?php var_dump($_POST);
+		require_once('ad.class.php');
+		
+		$createdAT = moment();
+
+		$ad = new ad($_POST'a, $_POST b, $_POST c,$_POST d, $_POST e, $_POST f');
+
+		include('header.php');
+
+
+		<
+				name-email
+			bootstrap "form"-- upload name email etc
+			adjust columns for data
+			adjust divs and put in names for data
+			put in <buttons> for create ad and cancel
+
+
+
+	
+
+
+FRONT END PAGES
+1. homepage
+	ads
+		ad <title>click ad here</title>
+		photo
+
+button<create a new post>
+
+2. "adview" -- after clicking on ad
+	<button> editing
+
+3. ad creation view--
+	image view upload (optional)
+	title
+	body
+
+	BACK END
+
+	csvfile-- ads.csv table data w 1 row per add width 7 columns
+	title
+	body
+	date
+	time
+	contact
+	name
+	email
+
+
+
+

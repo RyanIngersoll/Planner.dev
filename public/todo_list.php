@@ -2,10 +2,13 @@
 	define('TXTFILE', '../data/todo.txt'); // .. instructs path to look for todo.txt in the data file which is one level above the public folder.
 
 	function openFileMenu($fileToOpen){
-	    $handle = fopen($fileToOpen, "r");
-	    $contents = trim(fread($handle, filesize($fileToOpen)));
-	    $contents_array = explode("\n", $contents); 
-	    fclose($handle);
+		$contents_array = [];
+		if (filesize($fileToOpen) > 0) {
+		    $handle = fopen($fileToOpen, "r");
+		    $contents = trim(fread($handle, filesize($fileToOpen)));
+		    $contents_array = explode("\n", $contents); 
+		    fclose($handle);
+		}
 		return $contents_array;		    
 	}
 
@@ -19,13 +22,21 @@
 
 	$items = openFileMenu(TXTFILE);
 
-    if (!empty($_POST)) {
+    if (isset($_POST['itemtoadd'])) {
 		array_push($items, $_POST['itemtoadd']);
 	    saveTOFile($items);
 	}
 	
+	if(isset($_POST['remove_item'])){//uses buttons to delete rows of data
+		$removeKey = $_POST['remove_item'];
+		unset($items[$removeKey]);
+		$items = array_values($items);
+		saveTOFile($items);
+	}
 
-	if (!empty($_GET['remove'])){ // ?remove in the echo statement below sets $key to be the item removed...the ? is the query request
+
+//uses href to delete rows of data
+	if (isset($_GET['remove'])){ // ?remove in the echo statement below sets $key to be the item removed...the ? is the query request
 		$removeKey = $_GET['remove'];
 		unset($items[$removeKey]);
 		saveTOFile($items);
@@ -42,10 +53,20 @@
         move_uploaded_file($_FILES['file1']['tmp_name'], $saved_filename);
         //$newitems = openFileMenu($saved_filename);
         //addUploadfiles($items,$saved_filename);
+        saveTOFile($items);
     }
     else{
     	$errorMessage = "there was a problem";
     }
+    if (isset($saved_filename)) {
+	        // If we did, show a link to the uploaded file
+	        echo "<p>You can download your file <a href='/uploads/{$filename}'>here</a>.</p>";
+
+	        $newitems = openFileMenu($saved_filename);
+			$items = array_merge($items, $newitems);
+			saveTOFile($items);
+	    	echo "<h3> we have updated the todo list from the textfile you uploaded </h3>";
+	    	}
 
 ?>
 <!DOCTYPE html>
@@ -61,37 +82,59 @@
 
 		<h5>$_POST</h5>
 		<?php var_dump($_POST); ?>
-	
-		<button id="remove item">Remove Item</button>
 
 		<h1>"to do list"</h1>
+		
+		<h1> this is the text file todo list  + adding items from POST line</h1>
+
+
 		<ol>
+			<?foreach($items as $key => $chores): ?>
+				<li><button class="remove-button" data-item-id="<?= $key; ?>">Remove</button><?= ": " . $chores ?></li>
+			<? endforeach; ?>
+		
+				
 		<?php
 
-			echo "<h1> this is the text file todo list  + adding items from POST line</h1>";
+			// foreach ($items as $key => $chores) {
+			// 	//echo "<button id="remove item">Remove Item</button>" . PHP_EOL;
+			// 	echo "<li><a href=" . "?remove=$key" . ">mark complete </a> --index #  " . $key . ": " . $chores . "</li>";
+			// }
 
-			foreach ($items as $key => $chores) {
-				echo "<li><a href=" . "?remove=$key" . ">mark complete </a> --index #  " . $key . ": " . $chores . "</li>";
-			}
-
-
-			if (isset($saved_filename)) {
-	        // If we did, show a link to the uploaded file
-	        echo "<p>You can download your file <a href='/uploads/{$filename}'>here</a>.</p>";
-
-	        $newitems = openFileMenu($saved_filename);
-			$items = array_merge($items, $newitems);
-			saveTOFile($items);
-	    	echo "<h3> we have updated the todo list from the textfile you uploaded </h3>";
-	    	}
 
 			
-			if (isset($errorMessage)) {
-				echo "<h1>errorMESSAGE</h1>" . PHP_EOL;
-				echo "<h2>please make sure you upload a text file</h2>" . PHP_EOL;
-			}
+
+			
+			// if (isset($errorMessage)) {
+			// 	echo "<h1>errorMESSAGE</h1>" . PHP_EOL;
+			// 	echo "<h2>please make sure you upload a text file</h2>" . PHP_EOL;
+			// }
 		?>
 		</ol>
+
+		<!-- <form action="todo_list.php" method="post" id="remove-form">
+    		<input type="hidden" name="remove_item" id="remove-item">
+		</form> -->
+		
+		<script>
+			// Get all the remove buttons
+			var removeButtons = document.getElementsByClassName("remove-button");
+
+			// Loop over all the buttons
+			for (var i=0; i < removeButtons.length; i++) {
+			    // Attach a click event listener to each button
+			    removeButtons[i].addEventListener("click", function() {
+			        // Get the ID of the item we clicked remove for
+			        var itemId = this.attributes['data-item-id'].value;
+
+			        // Put that ID into our hidden form field
+			        document.getElementById("remove-item").value = itemId;
+			        
+			        // Submit the form
+			        document.getElementById("remove-form").submit();
+			    });
+			}
+		</script>
 
 	    <h1>Upload File</h1>
 
@@ -113,7 +156,7 @@
 		</form> 
 
 		<form action="todo_list.php" method="post" id="remove-form">
-			<input type="hidden" name="remove_item" ide="remove-item" />
+			<input type="hidden" name="remove_item" id="remove-item" />
 		</form>
 		
 	</body>

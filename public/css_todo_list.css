@@ -1,0 +1,38 @@
+/*<!-- Create an external stylesheet and link it to your todo list page.
+Add a style to change the color of the headers on your page and make them underlined.
+Add a style to change the background color of the page.
+Add a style to change the list-style to something other than the default.
+Add a style to change the font for the entire page.
+Continue experimenting with styles to increase the visual appeal of the todo list.
+When complete, save your files, commit the files to your git repository, and push to GitHub. -->
+*/
+
+h1 { color: green;
+	background-color: transparent;
+        text-decoration: underline;
+        font-family: Helvetica, Geneva, Verdana, sans-serif;
+        font-weight: bold;
+        font-style: italic;
+        font-variant: small-caps;
+        text-decoration: line-through;
+        font-size: 4em;
+		text-shadow: 2px 2px black;
+}
+
+body {
+	background-color: transparent;
+	background-image: url(0227-johnny-manziel-630x420.jpg)
+}
+ul {
+	color: purple;
+	background-color: transparent;
+        text-decoration: underline;
+        font-family:  Verdana, sans-serif;
+        font-weight: bold;
+        
+        font-variant: small-caps;
+        
+        font-size: 2em;
+		text-shadow: 2px 2px black;
+
+}
