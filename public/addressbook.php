@@ -1,12 +1,12 @@
 <?php
-define('CSVFILE', 'addressbook.csv');
+define('CSVFILE', 'ADDRESSBOOK.csv');
 var_dump($_FILES);
  
-require('address_data_store.php');
+require_once('inc/address_data_store.php');
+
 $ads = new AddressDataStore(CSVFILE); 
 
-$addressbook = $ads->readCsvFile();
-
+$addressbook = $ads->read_address_book();
 
  if (
     !empty($_POST['name']) &&
@@ -16,14 +16,14 @@ $addressbook = $ads->readCsvFile();
     !empty($_POST['zip'])
 ) {
     $addressbook[] = $_POST;
-    $ads->writeToFile($addressbook);
+    $ads->write_csv($addressbook);
 }
 
 if(isset($_POST['remove_item'])){
     $removeKey = $_POST['remove_item'];
     unset($addressbook[$removeKey]);
     $addressbook = array_values($addressbook);//resets keys
-    $ads->writeToFile($addressbook);
+    $ads->write_csv($addressbook);
 }
 
     if (count($_FILES) > 0 && $_FILES['file1']['error'] == UPLOAD_ERR_OK && $_FILES['file1']['type']== 'text/csv') {
@@ -38,9 +38,9 @@ if(isset($_POST['remove_item'])){
     
         $newCsv = new AddressDataStore(CSVFILE);
         $newCsv->filename = $saved_filename;
-        $newitems = $newCsv->readCsvFile();
+        $newitems = $newCsv->read_address_book();
         $addressbook = array_merge($addressbook, $newitems);
-        $ads->writeToFile($addressbook);
+        $ads->write_csv($addressbook);
      
     }
     
@@ -77,6 +77,8 @@ if(isset($_POST['remove_item'])){
                 <th>Zip Code</th>
 
               </tr>
+
+              <?var_dump($addressbook)?>
               
                 <?foreach($addressbook as $entry =>$row): ?>
                     <tr><td><button class="remove-button" data-item-id="<?= $entry; ?>">Remove</button>

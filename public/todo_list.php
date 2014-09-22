@@ -1,37 +1,41 @@
 <?php 
+require_once 'inc/filestore.php';
+
 	define('TXTFILE', '../data/todo.txt'); // .. instructs path to look for todo.txt in the data file which is one level above the public folder.
+	$todo = new Filestore(TXTFILE);
+	//$todo_list = [];
+	$items = $todo->read_lines();
+	// function openFileMenu($fileToOpen){
+	// 	$contents_array = [];
+	// 	if (filesize($fileToOpen) > 0) {
+	// 	    $handle = fopen($fileToOpen, "r");
+	// 	    $contents = trim(fread($handle, filesize($fileToOpen)));
+	// 	    $contents_array = explode("\n", $contents); 
+	// 	    fclose($handle);
+	// 	}
+	// 	return $contents_array;		    
+	// }
 
-	function openFileMenu($fileToOpen){
-		$contents_array = [];
-		if (filesize($fileToOpen) > 0) {
-		    $handle = fopen($fileToOpen, "r");
-		    $contents = trim(fread($handle, filesize($fileToOpen)));
-		    $contents_array = explode("\n", $contents); 
-		    fclose($handle);
-		}
-		return $contents_array;		    
-	}
+	// function saveTOFile($items, $filename = TXTFILE){
+	// 	$handle = fopen($filename, 'w');
+	// 		foreach ($items as $item) {
+	// 			fwrite($handle, $item . PHP_EOL);
+	// 		}
+	// 	fclose($handle);
+	// }
 
-	function saveTOFile($items, $filename = TXTFILE){
-		$handle = fopen($filename, 'w');
-			foreach ($items as $item) {
-				fwrite($handle, $item . PHP_EOL);
-			}
-		fclose($handle);
-	}
-
-	$items = openFileMenu(TXTFILE);
+	//$items = openFileMenu(TXTFILE);
 
     if (isset($_POST['itemtoadd'])) {
 		array_push($items, $_POST['itemtoadd']);
-	    saveTOFile($items);
+	    $todo->write_lines($items);
 	}
 	
 	if(isset($_POST['remove_item'])){//uses buttons to delete rows of data
 		$removeKey = $_POST['remove_item'];
 		unset($items[$removeKey]);
 		$items = array_values($items);
-		saveTOFile($items);
+		$todo->write_lines($items);
 	}
 
 
@@ -39,7 +43,7 @@
 	if (isset($_GET['remove'])){ // ?remove in the echo statement below sets $key to be the item removed...the ? is the query request
 		$removeKey = $_GET['remove'];
 		unset($items[$removeKey]);
-		saveTOFile($items);
+		$todo->write_lines($items);
 	}
 
 	if (count($_FILES) > 0 && $_FILES['file1']['error'] == 0 && $_FILES['file1']['type'] == 'text/plain') {
@@ -53,7 +57,7 @@
         move_uploaded_file($_FILES['file1']['tmp_name'], $saved_filename);
         //$newitems = openFileMenu($saved_filename);
         //addUploadfiles($items,$saved_filename);
-        saveTOFile($items);
+        $todo->write_lines($items);
     }
     else{
     	$errorMessage = "there was a problem";
@@ -62,9 +66,11 @@
 	        // If we did, show a link to the uploaded file
 	        echo "<p>You can download your file <a href='/uploads/{$filename}'>here</a>.</p>";
 
-	        $newitems = openFileMenu($saved_filename);
-			$items = array_merge($items, $newitems);
-			saveTOFile($items);
+	        $newitems = new Filestore($saved_filename);
+	        $newList = $newitems->read_lines();
+
+			$items = array_merge($items, $newList);
+			$todo->write_lines($items);
 	    	echo "<h3> we have updated the todo list from the textfile you uploaded </h3>";
 	    	}
 
