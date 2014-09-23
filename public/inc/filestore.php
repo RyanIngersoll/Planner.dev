@@ -1,21 +1,53 @@
 <?php
 
+//It is nice that the Filestore class can read and write to both regular text files and CSV files, however, it is cumbersome to have 2 methods for each type. Using substr() you can read the last 3 characters of a $filename and guess if it is text or CSV. Add a property to your Filestore class that is a boolean named $is_csv. Update the constructor to set this value to TRUE or FALSE based on the file's extension.
+
  class Filestore {
 
      public $filename = '';
-     //public $handle;
+     private $is_csv = FALSE;
 
 
      function __construct($filename = '') {
           $this->filename = $filename;
+          if(substr($this->filename, -3) == 'csv') {
+            $this->is_csv = TRUE;
+
+          }
+     }
+     function chkNumChar($items) {
+    // Check if $name is a string
+    if (empty($items) || (strlen($items) >= 240)) {
+        throw new Exception('todo item must be less than 240 char');
+    }
+
+}
+
+      public function read(){
+      if ($this->is_csv == TRUE){
+        return $this->read_csv();
+      }
+      else{
+        return $this->read_lines();
+      }
+     }
+
+     public function write($array){
+      if($this->is_csv == TRUE){
+        return $this->write_csv($array);
+      }
+      else{
+        return $this->write_lines($array);
+      }
+
      }
 
      /**
       * Returns array of lines in $this->filename
       */
-     function read_lines() {
+     private function read_lines() {
             $contents_array = [];
-
+            //.txt files
         if (filesize($this->filename) > 0) {
             $handle = fopen($this->filename, "r");
             $contents = trim(fread($handle, filesize($this->filename)));
@@ -28,7 +60,7 @@
      /**
       * Writes each element in $array to a new line in $this->filename
       */
-     function write_lines($array) {
+     private function write_lines($array) {
         $handle = fopen($this->filename, 'w');
 
           foreach ($array as $line) {
@@ -42,7 +74,7 @@
      /**
       * Reads contents of csv $this->filename, returns an array
       */
-     function read_csv() {
+     private function read_csv() {
         $csvRow = [];
 
         $handle = fopen($this->filename, 'r');
@@ -67,12 +99,11 @@
      /**
       * Writes contents of $array to csv $this->filename
       */
-     function write_csv($array) {
+     private function write_csv($array) {
           $handle = fopen($this->filename, 'w');
 
           foreach ($array as $row) {
-              fputcsv($handle, $row . PHP_EOL);
-              
+              fputcsv($handle, $row);
           }
 
         fclose($handle);

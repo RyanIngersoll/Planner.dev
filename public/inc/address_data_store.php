@@ -11,15 +11,22 @@ require_once 'filestore.php';
 
 
      function read_address_book() {
-         $addressbook = $this->read_csv();
+         $addressbook = $this->read();
          return $addressbook;
      }
 
      function write_address_book($addresses_array) {
-         $this->write_csv($addresses_array);
+         $this->write($addresses_array);
      }
 
- }
+     function chkNumChar($post) {
+	    foreach ($post as $item) {
+	    	if (empty($item) || (strlen($item) > 125)) {
+	        	throw new Exception('todo item must be less than 126 char');
+	    	}
+		}
+	}
+}
 
 
  ?>

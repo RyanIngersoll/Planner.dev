@@ -4,38 +4,39 @@ require_once 'inc/filestore.php';
 	define('TXTFILE', '../data/todo.txt'); // .. instructs path to look for todo.txt in the data file which is one level above the public folder.
 	$todo = new Filestore(TXTFILE);
 	//$todo_list = [];
-	$items = $todo->read_lines();
-	// function openFileMenu($fileToOpen){
-	// 	$contents_array = [];
-	// 	if (filesize($fileToOpen) > 0) {
-	// 	    $handle = fopen($fileToOpen, "r");
-	// 	    $contents = trim(fread($handle, filesize($fileToOpen)));
-	// 	    $contents_array = explode("\n", $contents); 
-	// 	    fclose($handle);
-	// 	}
-	// 	return $contents_array;		    
-	// }
+	$items = $todo->read();
 
-	// function saveTOFile($items, $filename = TXTFILE){
-	// 	$handle = fopen($filename, 'w');
-	// 		foreach ($items as $item) {
-	// 			fwrite($handle, $item . PHP_EOL);
-	// 		}
-	// 	fclose($handle);
-	// }
-
-	//$items = openFileMenu(TXTFILE);
-
-    if (isset($_POST['itemtoadd'])) {
-		array_push($items, $_POST['itemtoadd']);
-	    $todo->write_lines($items);
-	}
 	
+	//Update your TODO list application to throw an exception if someone tries to enter a TODO item that is empty or is longer than 240 characters. Research and use PHP string function(s) to perform this task.
+
+ function chkNumChar($items) {
+    // Check if $name is a string
+    if (empty($items) || (strlen($items) >= 240)) {
+        throw new Exception('todo item must be less than 240 char');
+    	}
+	}
+
+	
+	    if (isset($_POST['itemtoadd'])) {
+	    	try {
+		    	chkNumChar($_POST['itemtoadd']);
+				array_push($items, $_POST['itemtoadd']);
+			    $todo->write($items);
+			}
+
+			catch (Exception $e){
+			$catcherror = $e->getMessage();
+		}
+
+			// $items = $_POST['itemtoadd'];
+			// $todo->write($items);
+	}
+// '<a href="www.youtube.com/watch?v=acdABwYJqks">ERROR YOU HAVE 20 SECONDS TO COMPLY!!</a>';
 	if(isset($_POST['remove_item'])){//uses buttons to delete rows of data
 		$removeKey = $_POST['remove_item'];
 		unset($items[$removeKey]);
 		$items = array_values($items);
-		$todo->write_lines($items);
+		$todo->write($items);
 	}
 
 
@@ -43,7 +44,7 @@ require_once 'inc/filestore.php';
 	if (isset($_GET['remove'])){ // ?remove in the echo statement below sets $key to be the item removed...the ? is the query request
 		$removeKey = $_GET['remove'];
 		unset($items[$removeKey]);
-		$todo->write_lines($items);
+		$todo->write($items);
 	}
 
 	if (count($_FILES) > 0 && $_FILES['file1']['error'] == 0 && $_FILES['file1']['type'] == 'text/plain') {
@@ -57,7 +58,7 @@ require_once 'inc/filestore.php';
         move_uploaded_file($_FILES['file1']['tmp_name'], $saved_filename);
         //$newitems = openFileMenu($saved_filename);
         //addUploadfiles($items,$saved_filename);
-        $todo->write_lines($items);
+        $todo->write($items);
     }
     else{
     	$errorMessage = "there was a problem";
@@ -70,7 +71,7 @@ require_once 'inc/filestore.php';
 	        $newList = $newitems->read_lines();
 
 			$items = array_merge($items, $newList);
-			$todo->write_lines($items);
+			$todo->write($items);
 	    	echo "<h3> we have updated the todo list from the textfile you uploaded </h3>";
 	    	}
 
@@ -85,14 +86,18 @@ require_once 'inc/filestore.php';
 	<body>
 		<h5>$_GET</h5>
 		<?php var_dump($_GET); ?>
-
+		
 		<h5>$_POST</h5>
 		<?php var_dump($_POST); ?>
 
 		<h1>"to do list"</h1>
 		
-		<h1> this is the text file todo list  + adding items from POST line</h1>
-
+		<?php if(isset($catcherror)) :?>
+		<h1><?= $catcherror ?></h1>
+		<h1> YOU HAVE 20 SECONDS TO COMPLY</h1>
+		<iframe width="640" height="390" src="//www.youtube.com/v/acdABwYJqks&autoplay=1" frameborder="0" allowfullscreen></iframe>
+		<? endif; ?>
+		
 
 		<ol>
 			<?foreach($items as $key => $chores): ?>

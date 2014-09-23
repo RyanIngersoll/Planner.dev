@@ -6,24 +6,34 @@ require_once('inc/address_data_store.php');
 
 $ads = new AddressDataStore(CSVFILE); 
 
-$addressbook = $ads->read_address_book();
+$addressbook = $ads->read();
 
- if (
-    !empty($_POST['name']) &&
-    !empty($_POST['street_address']) &&
-    !empty($_POST['city']) &&
-    !empty($_POST['state']) &&
-    !empty($_POST['zip'])
-) {
+// Update your address book application to throw an exception for each input, except set the max length to 125 characters. Create a validation method to perform the check and throw the error, then call on each question.
+
+//chkNumChar($_POST['itemtoadd']);
+
+
+//  if (
+//     !empty($_POST['name']) && (strlen($_POST['name']) <= 125) &&
+//     !empty($_POST['street_address']) && (strlen($_POST['street_address']) <= 125) &&
+//     !empty($_POST['city']) && (strlen($_POST['city']) <= 125) &&
+//     !empty($_POST['state']) && (strlen($_POST['state']) <= 125) &&
+//     !empty($_POST['zip']) && (strlen($_POST['zip']) <= 125) 
+// ) {
     $addressbook[] = $_POST;
-    $ads->write_csv($addressbook);
-}
+    $ads->chkNumChar($_POST);
+    $ads->write($addressbook);
+// }
+//  else{
+//     throw new Exception('item must be less than 126 char');
+//     }
+ 
 
 if(isset($_POST['remove_item'])){
     $removeKey = $_POST['remove_item'];
     unset($addressbook[$removeKey]);
     $addressbook = array_values($addressbook);//resets keys
-    $ads->write_csv($addressbook);
+    $ads->write($addressbook);
 }
 
     if (count($_FILES) > 0 && $_FILES['file1']['error'] == UPLOAD_ERR_OK && $_FILES['file1']['type']== 'text/csv') {
@@ -38,9 +48,9 @@ if(isset($_POST['remove_item'])){
     
         $newCsv = new AddressDataStore(CSVFILE);
         $newCsv->filename = $saved_filename;
-        $newitems = $newCsv->read_address_book();
+        $newitems = $newCsv->read();
         $addressbook = array_merge($addressbook, $newitems);
-        $ads->write_csv($addressbook);
+        $ads->write($addressbook);
      
     }
     
